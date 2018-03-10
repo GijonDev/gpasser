@@ -1,15 +1,19 @@
 @echo off
 setlocal EnableDelayedExpansion
-pushd & color & title gpasser[%processor_level%]
+pushd & color & title gpasser
 
 
 if NOT [%1]==[] set "target=%1"
 
 
-if NOT DEFINED target set /p "target=Select target:" & goto mashMD5
-echo Select target:%target%
+if NOT DEFINED target goto detectInput
+echo Select target root:%target%
+goto caller
 
+:detectInput
+set /p "target=Select target root:"
 
+:caller
 call :fileExtension %target%
 goto mashMD5
 
@@ -20,12 +24,28 @@ exit /b
 
 :mashMD5
 echo Working...
-certutil -hashfile -v %target%
-CertUtil -hashfile %target% MD5
-CertUtil -hashfile %target% SHA256
+
+CertUtil -hashfile %target% MD2 > nul 2>&1
+CertUtil -hashfile %target% MD4 > nul 2>&1
+CertUtil -hashfile %target% SHA384 > nul 2>&1
+CertUtil -hashfile %target% SHA512 > nul 2>&1
+CertUtil -hashfile %target% MD5 > nul 2>&1
+CertUtil -hashfile %target% SHA256 > nul 2>&1
+::silently force-changes hashes
+
+echo %processor_revision%-%random%-%processor_level%-%random%>>%target%
 echo %random%-%processor_revision%-%processor_level%-%random%>>%target%
+echo %processor_level%-%random%-%processor_revision%-%random%>>%target%
+echo %processor_level%-%random%-%random%-%processor_revision%>>%target%
+::changes the raw md5 calculation
+
+CertUtil -hashfile %target% MD2
+CertUtil -hashfile %target% MD4
+CertUtil -hashfile %target% SHA384
+CertUtil -hashfile %target% SHA512
 CertUtil -hashfile %target% MD5
 CertUtil -hashfile %target% SHA256
+::reload hashes
 
 
 Set alphanum=ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789
