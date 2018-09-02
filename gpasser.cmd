@@ -25,18 +25,7 @@ exit /b
 :mashMD5
 echo Working...
 
-CertUtil -hashfile %target% MD2 > nul 2>&1
-CertUtil -hashfile %target% MD4 > nul 2>&1
-CertUtil -hashfile %target% SHA384 > nul 2>&1
-CertUtil -hashfile %target% SHA512 > nul 2>&1
-CertUtil -hashfile %target% MD5 > nul 2>&1
-CertUtil -hashfile %target% SHA256 > nul 2>&1
-::silently force-changes hashes
-
 echo %processor_revision%-%random%-%processor_level%-%random%>>%target%
-echo %random%-%processor_revision%-%processor_level%-%random%>>%target%
-echo %processor_level%-%random%-%processor_revision%-%random%>>%target%
-echo %processor_level%-%random%-%random%-%processor_revision%>>%target%
 ::changes the raw md5 calculation
 
 CertUtil -hashfile %target% MD2
